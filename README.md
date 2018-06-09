@@ -3,7 +3,7 @@ Mindspace websocket communication
 
 ## Usage
 ```
-<script src="https://cdn.rawgit.com/chrisnorman7/mindspace.js/9099863c/mindspace.js></script>
+<script src="https://cdn.rawgit.com/chrisnorman7/mindspace.js/9099863c/mindspace.js"></script>
 <script>
 mindspaceFunctions["message"] = (obj) => {
     let text = obj.args[0]
