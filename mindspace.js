@@ -1,23 +1,47 @@
-const mindspaceFunctions = {}
+class Mindspace {
+    constructor() {
+        this.socket = null
+        this.commands = {}
+        this.onunsupportedcommand = null // Called when the server sends an unsupported command.
+        this.onclose = null // Called when the socket is closed.
+    }
 
-function mindspaceSend(soc, obj) {
-    if (obj.args === undefined) {
-        obj.args = []
+    addCommand(name, func) {
+        this.commands[name] = func
     }
-    if (obj.kwargs === undefined) {
-        obj.kwargs = {}
+
+    sendCommand(name, obj) {
+        if (obj.args === undefined) {
+            obj.args = []
+        }
+        if (obj.kwargs === undefined) {
+            obj.kwargs = {}
+        }
+        let data = [obj.name, obj.args, obj.kwargs]
+        let s = JSON.stringify(data)
+        this.socket.send(s)
     }
-    let l = [obj.name, obj.args, obj.kwargs]
-    let value = JSON.stringify(l)
-    soc.send(value)
+
+    connect(url) {
+        this.socket = new WebSocket(url)
+        this.socket.onmessage = e => {
+            let data = JSON.parse(e.data)
+            let command = this.commands[data.command]
+            if (command === undefined) {
+                if (this.onunsupportedcommand !== null) {
+                    this.onunsupportedcommand(data)
+                }
+            } else {
+                command(...data.args)
+            }
+        }
+        this.socket.onclose = () => {
+            this.socket = null
+            if (this.onclose !== null) {
+                this.onclose()
+            }
+        }
+    }
 }
 
-function mindspaceReceive(string) {
-    let obj = JSON.parse(string)
-    let func = mindspaceFunctions[obj.name]
-    if (func !== undefined) {
-        func(obj)
-    } else {
-        throw Error(`Unrecognised command: ${string}`)
-    }
-}
+this.Mindspace = Mindspace
