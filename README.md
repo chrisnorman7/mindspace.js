@@ -3,14 +3,14 @@ Mindspace websocket communication
 
 ## Usage
 ```
-<script src="https://cdn.rawgit.com/chrisnorman7/mindspace.js/9099863c/mindspace.js"></script>
+<script src="https://chrisnorman7.github.io/mindspace.js/mindspace.js"></script>
 <script>
-mindspaceFunctions["message"] = (obj) => {
-    let text = obj.args[0]
-    alert(text)
-}
+m = new Mindspace()
+m.addCommand("message", alert)
 
-mindspaceFunctions["ping"] = () => mindspaceSend(socket, {name: "pong"})
+m.addCommand("ping", () => m.sendCommand({name: "pong"})
+
+m.connect("ws://somedomain.com:1234)
 </script>
 ```
 
