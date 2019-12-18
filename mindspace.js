@@ -10,7 +10,7 @@ class Mindspace {
         this.commands[name] = func
     }
 
-    sendCommand(name, obj) {
+    sendCommand(obj) {
         if (obj.args === undefined) {
             obj.args = []
         }
